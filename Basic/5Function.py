@@ -320,3 +320,6 @@ def recharge(num):
         time.sleep(0.09)
         print(f'\rnow:{i}%', end='')  # 每次回到行首，且默认取消换行符
     return True
+
+
+# 装饰器 叠加 实际上就是 将已有函数 进行多次封装
