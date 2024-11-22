@@ -358,6 +358,8 @@ class D(B, C):
 # 但是类有两个父类，应该怎么找？
 # 根据 MRO列表【Method Resolution Order】顺序进行查找
 print(D.mro())  # ！！！ 经典类是没有 mro方法的
+
+
 # 通过 C3算法 来计算 MRO列表
 
 # python 会给每个类都计算一个 MRO列表 属性的查找就会按照这个顺序来查找的
@@ -370,3 +372,32 @@ print(D.mro())  # ！！！ 经典类是没有 mro方法的
 # 经典类：深度优先查找 -- 找第一条分支的时候，就要找共同的父类
 # 新式类：广度优先查找 -- 找完最后一条分支之后，才找共同的父类
 # 这个与数据结构里的 广度优先|深度优先 不同
+
+
+# 多继承 会导致代码可读性变差
+# 鸭 鹅 会游泳 但是鸡不会，所以不能在家禽类里面定义 swimming 功能
+# 只能定义一个 Swim类 让 鸭 鹅 继承 但是类的继承 更多体现的是一种 属于的关系，
+# 目前看的话 就是 鸭 鹅 属于家禽 同时属于游泳类  在可读性上变差了
+# 引入了 MixIns 机制，
+# MixIns：并不修改任何机制，只是修改了类名，表示此类是一个混入类。并不代表属于关系
+class Fowl(object):  # 家禽类
+    ...
+
+
+class SwimMixin(object):
+    def swimming(self):
+        ...
+
+    ...
+
+
+class Chicken(Fowl):  # 鸡
+    ...
+
+
+class Duck(SwimMixin, Fowl):  # 鸭
+    ...
+
+
+class Goose(SwimMixin, Fowl):  # 鹅
+    ...
