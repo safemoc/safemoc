@@ -4,6 +4,9 @@
 # 对象就是"容器" 用来存放东西
 # 类
 # 类的 名称空间 在类被定义的时候 子代码内容就运行了
+from tkinter.font import names
+
+
 class Hero:
     hero_work = '射手'
 
@@ -17,7 +20,7 @@ print(Hero.hero_work)
 print(Hero.__dict__['hero_work'])
 
 
-class Learn():
+class Learn(object):
     def __init__(self):  # 类在实例化时调用
         ...  # init 应该返回 None 也只能返回None
 
@@ -43,7 +46,7 @@ print(Hero.hero_work)  # 结果是 儿子
 # 因为 lb.hero_work 实际上是赋值操作,在lb的实例中添加了一个 hero_work 并不会修改 类中的属性
 # 创建一个 可以统计 有多少个实例对象的 类
 
-class count_():
+class count_(object):
     count = 0
 
     def __init__(self):  # 第一个参数是 self 代表实例本身,也可以叫做其他名字但是 规范定义为  self
@@ -177,18 +180,26 @@ print(obj.age)
 del obj.age
 print(obj.age)
 
+
 # ======================================================================================================================
 
 # 继承
 # 创建新类的方式,被继承的类叫做父类(基类) 通过继承创建的类称之为子类
 class Parent1:
     pass
+
+
 class Parent2:
     ...
-class Child1(Parent1): # 单继承
-    ... # 只继承了一个父类,这种继承叫做单继承
-class Child2(Parent1,Parent2): # 多继承 --> 在很多语言中不支持多继承
-    ... # 继承了两个父类,这种继承叫做多继承
+
+
+class Child1(Parent1):  # 单继承
+    ...  # 只继承了一个父类,这种继承叫做单继承
+
+
+class Child2(Parent1, Parent2):  # 多继承 --> 在很多语言中不支持多继承
+    ...  # 继承了两个父类,这种继承叫做多继承
+
 
 print(Child2.__bases__)
 print(Child1.__bases__)
@@ -201,8 +212,161 @@ print(Child1.__bases__)
 # 为了让你的代码可以兼容python2 可以在创建类的时候 声明一下 继承 object 类
 
 class Test(object):
-    ... # 新式类
+    ...  # 新式类
 
 
 # 继承的特性: --> 遗传
 # 子类会遗传父类的属性 --> 子类自己有的就用自己的,自己没有 就找父类要
+
+# 多继承
+# 优点:
+# 一个类可以继承多个父类,减少了代码的冗余
+# 缺点：
+# 1: 多继承违背了人的思维习惯
+# 2: 多继承会让代码的可读性变差
+# 如果要用多继承,应该用 Minxins
+#   抽象过程:
+#       抽取对象的共有部分,定义为一个类,然后抽取类的公有部分,为基类(父类)
+#   继承过程:
+#       与抽象过程相反,先定公有部分为父类,然后依次继承和实例到最后为对象
+# 如果子类继承的有公有属性,但是子类自己定义了这个属性,那么不会去父类寻找这个属性了 --> 派生概念:父类有这个属性,子类自己派生了新的属性,或者父类没有但是子类自己派生了
+
+# 继承实现
+
+class Chinese:
+    star = 'earth'
+    nation = 'China'
+
+    def __init__(self, name, age, gender, ) -> None:
+        self.name = name
+        self.age = age
+        self.gender = gender
+
+    def speak(self) -> None:
+        print(f'{self.name} speak Chinese')
+
+
+class American:
+    star = 'earth'
+    nation = 'America'
+
+    def __init__(self, name, age, gender):
+        self.name = name
+        self.age = age
+        self.gender = gender
+
+    def speak(self):
+        print(f'{self.name} speaking English')
+
+
+# 提取 公有属性
+class Human(object):  # 作为父类
+    star = 'earth'
+
+    def __init__(self, name, age, gender):
+        self.name = name
+        self.age = age
+        self.gender = gender
+
+
+class Chinese(Human):
+    nation = 'China'
+
+    def speak(self) -> None:
+        print(f'{self.name} speak Chinese')
+
+
+class American(Human):
+    nation = 'America'
+
+    def speak(self):
+        print(f'{self.name} speaking English')
+
+
+xx = Chinese('许仙', 22, '男')
+
+
+# 调用类中的 __init__方法 子类没有就去父类找,使用父类中 的 __init__
+
+
+# 派生需求，要在Chinese类中 添加一个 balance的属性。 但是在 父类中 没有balance
+# 所以不是重新定义 父类的方法，也不是定义自己的方法，而是根据父类的方法进行扩展
+# 参考：
+class Chinese(Human):
+    def __init__(self, name, age, gender, balance):
+        Human.__init__(self, name, age, gender)  # 因为直接调用类方法，就不是绑定方法了，第一个参数就需要传对象参数了
+        self.balance = balance
+
+
+# 以上就实现了 扩展但不重写 父类方法了
+
+
+# 属性查找：
+# 对象-类-父类-----> 祖先类（object)
+class Test1:
+    def f1(self):
+        print('test1.f1')
+
+    def f2(self):
+        print('test1.f2')
+        self.f1()
+
+
+class Test2(Test1):
+    def f1(self):
+        self.f2()
+
+
+obj = Test2()
+obj.f2()
+
+
+# 1 obj对象没有f2
+# 2 Test2 类没有f2
+# 3 Test1 父类有f2 --> 调用 self.f1()   -- self 代表对象本身
+# 4 self-->obj 对象没有f1
+# 5 obj 的 Test2 类有f1
+# 6 执行 Test2 f1
+# 如果想调用 Test1的f1 的话 可以通过 类调用 将 self.f1() 替换为 Test1.f1() # 类调用就不再是绑定方法了，第一个参数self 需要传值。
+# Test1.f1(self)
+# 或者将f1方法 改名为 __f1()
+# 因为在实例的时候 __f1() 会更名为 _Test1__f1 所以就可以调用了
+
+
+# 多继承属性查找：
+# 多继承会造成一个问题：菱形继承（钻石继承）
+# 案例：
+class A:  # 非object类
+    ...
+
+
+class B(A):
+    ...
+
+
+class C(A):
+    ...
+
+
+class D(B, C):
+    ...
+
+
+# D 继承了 BC 两个类 这两个类有一个共同的父类A
+
+# 属性查找时 会先从对象-> 类->父类
+# 但是类有两个父类，应该怎么找？
+# 根据 MRO列表【Method Resolution Order】顺序进行查找
+print(D.mro())  # ！！！ 经典类是没有 mro方法的
+# 通过 C3算法 来计算 MRO列表
+
+# python 会给每个类都计算一个 MRO列表 属性的查找就会按照这个顺序来查找的
+
+# 非菱形继承
+# 会从左到右依次按照分支查找，先找最左侧的父类 此父类没有 查找此父类的父类。完成这个分支，查找下一个父类
+
+
+# 菱形继承
+# 经典类：深度优先查找 -- 找第一条分支的时候，就要找共同的父类
+# 新式类：广度优先查找 -- 找完最后一条分支之后，才找共同的父类
+# 这个与数据结构里的 广度优先|深度优先 不同
