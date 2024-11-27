@@ -614,6 +614,21 @@ if hasattr(obj, 'name'):  # 直接返回 True False
     print(obj.__dict__)
     delattr(obj, 'age')
     print(dir(obj))  # dir 会返回obj中 所有的属性
+    getattr(obj, '123123', None)  # 如果没有对应的属性，就会返回第三个值
+
 
 # 反射案例：
-getattr(obj, '123123', None)  # 如果没有对应的属性，就会返回第三个值
+class Ftp(object):
+    def put(self):
+        print(11111111111111)
+
+    def get(self):
+        print(222222222222)
+
+    def incomplete(self):
+        option = input('>>>')
+        getattr(self, option, None)
+
+
+
+
