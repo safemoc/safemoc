@@ -512,5 +512,108 @@ print([1, 2, 3, 4].__len__())
 # 在python中 推崇的多态不是 继承
 # python 大多用规范来限制你，不会强制你
 # 如果类都按照规定创建了相对应的方法，就不用在用父类限制了
-# 继承实际上就是一种耦合思想
+# 继承实际上就是一种耦合思想   如果不继承 实际上完成的就是一种 解耦合
 # 这就是python推崇的 鸭子类型
+# 看着像鸭子，走路像鸭子，声音像鸭子，那就是鸭子
+# 也就是说，如果各个类都内封了该方法，就不需要规定父类来限制子类
+
+# 抽象基类
+import abc  # 全称 abstractmethod
+
+
+class Car(metaclass=abc.ABCMeta):
+    @abc.abstractmethod  # 装饰了这个装饰器，如果实例子类后，子类没有重写这个方法，就会报错
+    def run(self):
+        print('开始跑')
+    # 抽象基类 不能直接实例化
+
+
+class Benz(Car):
+    ...
+
+
+class Lx(Car):
+    ...
+
+
+class Auto(Car):
+    ...
+
+
+# 类方法
+# 场景介绍
+# 假设登录场景
+class Mysql:
+    def __init__(self, ip, prot):
+        self.ip = ip
+        self.prot = prot
+
+
+obj = Mysql('127.0.0.1', 3306)
+
+
+# 如果要经常实例这个类，且登录信息是相同的，且登录信息存储在 settings.py 文件中
+class Mysql:
+    # 假设IP 、 PROT 是导入过来的配置信息
+    IP = '127.0.0.1'
+    PROT = 3306
+
+    def __init__(self, ip, prot):
+        self.ip = ip
+        self.prot = prot
+
+    def init(self):
+        return Mysql(Mysql.IP, Mysql.PROT)
+
+
+obj = Mysql('127.0.0.1', 3306)
+
+
+# 但是这个类 后续可能需要修改名字，修改名字的话，这种方法 也需要跟着修改
+# 这就需要 类方法，绑定类的方法，当调用方法的时候 自动把当前类，按照第一个参数传递进来
+
+class Mysql:
+    IP = '127.0.0.1'
+    PROT = 3306
+
+    def __init__(self, ip, prot):
+        self.ip = ip
+        self.prot = prot
+
+    @classmethod
+    def init(cls):  # cls 代表的就是当前类
+        return cls(cls.IP, cls.PROT)
+
+    @staticmethod  # 静态方法，该方法会封装到类里，但是不会需要对象参数，是作为一个独立的函数来使用的
+    def f2():
+        print(123)
+
+
+# 反射机制  动态语言 一定会有反射机制
+# 在程序运行中，动态获取对象信息，动态调用对象方法的功能
+# 通过字符串的形式，来修改操作 对象的属性
+hasattr()  # 判断对象是否有该属性
+getattr()  # 获取该属性
+setattr()  # 给该属性赋值
+delattr()  # 删除该属性
+
+
+class Obj:
+    def __int__(self):
+        self.name = 'heih'
+        self.age = 18
+
+    def f1(self):
+        print('123123123')
+
+
+obj = Obj()
+if hasattr(obj, 'name'):  # 直接返回 True False
+    getattr(obj, 'f1')()  # 返回的是内存地址，如果是方法，需要调用的话，需要在后面 + () 调用一下
+    setattr(obj, 'name', 'lixiaolu')
+    print(obj.__dict__)
+    delattr(obj, 'age')
+    print(dir(obj))  # dir 会返回obj中 所有的属性
+
+# 反射案例：
+getattr(obj, '123123', None)  # 如果没有对应的属性，就会返回第三个值
