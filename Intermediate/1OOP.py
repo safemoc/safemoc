@@ -401,3 +401,116 @@ class Duck(SwimMixin, Fowl):  # 鸭
 
 class Goose(SwimMixin, Fowl):  # 鹅
     ...
+
+
+# 继承主要表现的是   什么 “是” 什么的关系 也可以成为  is-a 关系
+
+# super()  严格依赖继承关系实现重用父类代码
+# super 只能用在 新式类中  新式类 还分为 python2 和python3
+# 在python2中： super(cls,self)
+# 在python3中： super() # python3会自动将当前类，以及当前类self 传递
+
+
+class Human(object):  # 作为父类
+    star = 'earth'
+
+    def __init__(self, name, age, gender):
+        self.name = name
+        self.age = age
+        self.gender = gender
+
+
+class Chinese(Human):
+    def __init__(self, name, age, gender, balance):
+        super().__init__(name, age, gender)  # super会参照self所属类的mro列表从当前类所处位置的下一个类开始找属性
+        self.balance = balance
+
+    def speak(self) -> None:
+        print(f'{self.name} speak Chinese')
+
+
+class American(Human):
+    nation = 'America'
+
+    def speak(self):
+        print(f'{self.name} speaking English')
+
+
+# 测试super 的用法
+class A:
+    def f1(self):
+        print('A.f1')
+        super().f1()
+
+
+class B(A):
+    def f1(self):
+        print('B.f1')
+
+    ...
+
+
+class C(A, B):
+    ...
+
+
+obj = C()
+obj.f1()
+
+
+# C().f1() -> C没有去父类找 C的mro的下一个，A.f1()
+# A.f1() 中的super.f1() 会从C的mro中A的下一个位置开始找 也就是B.f1()
+
+
+# 多态：面向对象的最后一个特性了
+# 在继承的背景下，不用关子类是否重写了父类的方法，只要父类有，子类就一定可以使用这个方法。
+# 统一了使用标准
+
+
+class Car(object):
+    def run(self):
+        print('开始跑')
+
+
+class Benz(Car):
+    def run(self):
+        super().run()
+        print('98')
+
+    ...
+
+
+class Lx(Car):
+    def run(self):
+        super().run()
+        print(95)
+
+    ...
+
+
+class Auto(Car):
+    def run(self):
+        super().run()
+        print(92)
+
+    ...
+
+
+# 多态的使用：len()
+
+len('asdfasdf')
+len([1, 2, 3, 4])
+len({1: 1, 2: 2})
+# len 不管是 字符串还是列表还是字典都可以直接使用
+# 在python中 全是对象，
+# 所以字符串、列表、字典中 都有一个 .__len__ 的方法
+print('asdfasdf'.__len__())
+print([1, 2, 3, 4].__len__())
+# 所以len() 统一了 这些对象的使用方法
+
+
+# 在python中 推崇的多态不是 继承
+# python 大多用规范来限制你，不会强制你
+# 如果类都按照规定创建了相对应的方法，就不用在用父类限制了
+# 继承实际上就是一种耦合思想
+# 这就是python推崇的 鸭子类型
