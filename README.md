@@ -1,4 +1,4 @@
-# 👋 Hi，我是 safemoc
-## 🔗 联系我
+# 👋 Hello，我是 safemoc
+## 
 - 📫 Email: ...
 
