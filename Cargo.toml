@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
 
-members = ["crates/dbs","crates/users",
+members = ["crates/dbs", "crates/users",
     "fitloop",
 ]
