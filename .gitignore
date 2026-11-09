@@ -25,3 +25,4 @@ yarn-*
 pnpm-lock.yaml
 pnpm-store
 Cargo.lock
+/crates/users/.gitignore
