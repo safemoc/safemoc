@@ -23,13 +23,12 @@ pub async fn build_pool() -> Result<PgPool, sqlx::Error> {
         conn_opts = conn_opts.options([("search_path", schema.as_str())]);
     }
 
-    let max_life_time = if |_| {
-        std::env::var("DATABASE_MAX_LIFETIME")
-            .ok()
-            .and_then(|d| d.parse::<u64>().ok())
-            .unwrap_or(0)
-            == 0
-    } {
+    let _max_lifetime = std::env::var("DATABASE_MAX_LIFETIME")
+        .ok()
+        .and_then(|d| d.parse::<u64>().ok())
+        .unwrap_or(0);
+
+    let max_life_time = if _max_lifetime == 0 {
         None
     } else {
         Some(Duration::from_millis(300))
