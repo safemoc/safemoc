@@ -24,7 +24,7 @@ pub async fn build_pool() -> Result<PgPool, sqlx::Error> {
     if !schema.is_empty() {
         conn_opts = conn_opts.options([("search_path", schema.as_str())]);
     }
-    let mut max_life_time = std::env::var("DB_MAX_LIFETIME")
+    let max_life_time = std::env::var("DB_MAX_LIFETIME")
         .ok()
         .and_then(|d| d.parse::<u64>().ok())
         .unwrap_or(0);
