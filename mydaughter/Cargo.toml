@@ -1,0 +1,9 @@
+[package]
+name = "mydaughter"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+async-openai = { version = "0.43", features = ["chat-completion"] }
+dotenvy = "0.15.7"

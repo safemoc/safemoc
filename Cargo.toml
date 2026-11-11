@@ -1,4 +1,4 @@
 [workspace]
 resolver = "2"
 
-members = ["crates/dbs", "crates/users", "fitloop",]
+members = ["crates/dbs", "crates/users", "fitloop", "mydaughter",]
